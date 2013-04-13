@@ -1,0 +1,142 @@
+.gradX_container {
+    width: 400px;
+    height: 42px;
+    border: 1px solid black;
+}
+
+.gradX_panel {
+    width: 400px;
+    height: 42px;
+
+}
+
+.gradX_start_sliders {
+    width: 408px;
+    margin-top:8px;
+    margin-left: -4px;
+    border: 1px solid #333;
+    background: grey;
+    height: 12px;
+    box-shadow: inset 0px 2px 2px;
+
+}
+
+.gradX_slider {
+    position: fixed;
+    left: 0px;
+    cursor: pointer;
+    width: 6px;
+    height: 10px;
+    background: red;
+    border: 1px solid black;
+    display: inline-block;
+    
+}
+
+.gradX_slider:after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    left: 2px;
+    border-style: solid;
+    border-width: 70px 1px 0px 0px;
+    border-color: transparent #000;
+    display: block;
+    width: 0;
+    z-index: 1;
+}
+
+#gradX_slider_info {
+    display: none;
+    
+}
+
+.gradX_add_slider {
+    border: 1px solid black;
+    width: 50px;
+    margin-bottom: 5px;
+}
+
+.gradX {
+    position: absolute;
+}
+
+
+
+
+
+/* Common stuff */
+.picker-wrapper, 
+.slide-wrapper {
+    position: relative;
+    float: left;
+}
+.picker-indicator,
+.slide-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+.picker,
+.slide {
+    cursor: crosshair;
+    float: left;
+}
+
+/* Default skin */
+
+.cp-default {
+    background-color: #333;
+    padding: 11px;
+    border-radius: 6px;
+    float: left;
+    margin-top: 14px;
+    margin-left: -118px;
+    position: fixed;
+
+}
+.cp-default .picker {
+    width: 200px;
+    height: 200px;
+}
+.cp-default .slide {
+    width: 30px;
+    height: 200px;
+}
+.cp-default .slide-wrapper {
+    margin-left: 10px;
+}
+.cp-default .picker-indicator {
+    width: 5px;
+    height: 5px;
+    border: 2px solid darkblue;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    opacity: .5;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+    filter: alpha(opacity=50);
+    background-color: white;
+}
+.cp-default .slide-indicator {
+    width: 100%;
+    height: 10px;
+    left: -4px;
+    opacity: .6;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+    filter: alpha(opacity=60);
+    border: 4px solid black;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #333;
+}
+
+
+
+
