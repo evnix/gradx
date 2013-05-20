@@ -158,9 +158,6 @@ var gradx = {
 
     },
         
-        
-    //var me  = this; //personal preference
-    //var this.me = gradx.gx(this);
                                  
             
     //if target element is specified the target's style (background) is updated
@@ -284,7 +281,7 @@ var gradx = {
                 .show();
                  
             }
-            gradx.cp.setRgb(rgb);
+            gradx.cp.ColorPickerSetColor(rgb);
 
         }
  
@@ -322,7 +319,7 @@ var gradx = {
             //convert % to px based on containers width
             delta = 6; //range: -32px tp 378px
             position = parseInt( (obj[k].position*this.container_width) / 100 ) + delta + "px";
-                        
+                     
             id = "gradx_slider_"+(this.slider_index); //create an id for this slider
             this.sliders.push(                             
                 [
@@ -378,7 +375,7 @@ var gradx = {
                     var color = gradx.gx(gradx.current_slider_id).css("backgroundColor");
                     //but what happens if @color is not in RGB ? :(
                     var rgb = gradx.get_rgb_obj(color);
-                    gradx.cp.setRgb(rgb);
+                    gradx.cp.ColorPickerSetColor(rgb);
                             
                 }          
     
@@ -397,7 +394,7 @@ var gradx = {
         this.id = id.replace("#","");
         id = this.id;
         this.current_slider_id = false;
-        var html = "<div class='gradX'><div id='gradx_add_slider' class='gradx_add_slider'>ADD</div>\n\
+        var html = "<div class='gradX'><div id='gradx_add_slider' class='gradx_add_slider btn'><i class='icon-add'></i>add</div>\n\
                                     <div class='gradx_container' id='gradx_"+id+"'>\n\
                                          \n\
                                         <div id='gradx_stop_sliders_"+id+"'></div>\n\
@@ -420,18 +417,11 @@ var gradx = {
 
 
         gradx.add_event(document, 'click', function() {
-            if(!gradx.jQ_present){
-                if(!gradx.slider_hovered[id]){
-                    gradx.gx("#gradx_slider_info").hide();
-                    return false;
-                    
-                }
-            }else{
-                if (!gradx.me.is(':hover')) {
+//            if(!gradx.jQ_present){
+                if(!gradx.slider_hovered[id]){console.log("g");
                     gradx.gx("#gradx_slider_info").hide();
                     return false;
                 }
-            }
         })
                                     
 
@@ -448,7 +438,7 @@ var gradx = {
 
         });
               
-        gradx.cp = ColorPicker(
+        /*gradx.cp = ColorPicker(
 
             document.getElementById('gradx_slider_info'),
 
@@ -461,7 +451,28 @@ var gradx = {
             //console.log(hsv.h, hsv.s, hsv.v);         // [0-359], [0-1], [0-1]
             //console.log(rgb.r, rgb.g, rgb.b);         // [0-255], [0-255], [0-255]
             //document.body.style.backgroundColor = hex;        // #HEX
-            });
+            });*/
+        
+        gradx.cp = gradx.gx('#gradx_slider_info');
+        
+        gradx.cp.ColorPicker({
+            
+            
+            onChange: function (hsb, hex, rgb) {
+                if(gradx.current_slider_id != false) {
+                    gradx.gx(gradx.current_slider_id).css('background-color',hex);
+                    gradx.update_style_array();
+                    gradx.apply_style(gradx.panel, gradx.get_style_value());
+                }                
+            },
+            
+            onSubmit: function() {
+                gradx.gx("#gradx_slider_info").hide();
+            },
+            
+            flat: true
+        })
+        
             
         gradx.add_event(document.getElementById(id),'mouseout',function(){
             gradx.slider_hovered[id] = false;
