@@ -21,9 +21,9 @@ var Drag = {
         o.root = oRoot && oRoot != null ? oRoot : o ;
 
         if (o.hmode  && isNaN(parseInt(o.root.style.left  ))) o.root.style.left   = "0px";
-        if (o.vmode  && isNaN(parseInt(o.root.style.top   ))) o.root.style.top    = "0px";
+       //if (o.vmode  && isNaN(parseInt(o.root.style.top   ))) o.root.style.top    = "0px";
         if (!o.hmode && isNaN(parseInt(o.root.style.right ))) o.root.style.right  = "0px";
-        if (!o.vmode && isNaN(parseInt(o.root.style.bottom))) o.root.style.bottom = "0px";
+       // if (!o.vmode && isNaN(parseInt(o.root.style.bottom))) o.root.style.bottom = "0px";
 
         o.minX	= typeof minX != 'undefined' ? minX : null;
         o.minY	= typeof minY != 'undefined' ? minY : null;
@@ -40,7 +40,7 @@ var Drag = {
 
     start : function(e)
     {
-        gradx.current_slider_id = this.id;
+        gradx.current_slider_id = "#"+this.id;
 
         var o = Drag.obj = this;
         e = Drag.fixE(e);
@@ -69,7 +69,7 @@ var Drag = {
         }
 
         document.onmousemove	= Drag.drag;
-        document.onmouseup		= Drag.end;
+        document.onmouseup	= Drag.end;
 
         return false;
     },
@@ -81,7 +81,7 @@ var Drag = {
 
         gradx.update_style_array();
         gradx.apply_style(gradx.panel, gradx.get_style_value());
-        var left = gradx.gx(o.id).css("left");
+        var left = gradx.gx("#"+o.id).css("left");
 
 
         if(parseInt(left) > 120 && parseInt(left) < 272) {
@@ -101,10 +101,10 @@ var Drag = {
             .show();
                  
         }
-         var color = gradx.gx(o.id).css("backgroundColor");
+         var color = gradx.gx("#"+o.id).css("backgroundColor");
         //but what happens if @color is not in RGB ? :(
         var rgb = gradx.get_rgb_obj(color);
-        gradx.cp.setRgb(rgb);
+        gradx.cp.ColorPickerSetColor(rgb);
 
 
         var ey	= e.clientY;
@@ -125,7 +125,7 @@ var Drag = {
         else if (o.yMapper)	ny = o.yMapper(x)
 
         Drag.obj.root.style[o.hmode ? "left" : "right"] = nx + "px";
-        Drag.obj.root.style[o.vmode ? "top" : "bottom"] = ny + "px";
+        //Drag.obj.root.style[o.vmode ? "top" : "bottom"] = ny + "px";
         Drag.obj.lastMouseX	= ex;
         Drag.obj.lastMouseY	= ey;
 

@@ -2,11 +2,12 @@
 
 /*
  *
- *
+ * SAMPLE USAGE DETAILS :
+ * 
  * gradx (id of element, {sliders}[OPTIONAL], id of target element[OPTIONAL])
  *
  * sliders structure :
- *                            
+ *
  * [
  *  {
  *     color: "COLOR",
@@ -14,8 +15,8 @@
  *  },
  *  {
  *     ....
- *     .... 
- *  }, 
+ *     ....
+ *  },
  *  ....
  * ]
  *
@@ -23,393 +24,402 @@
 
 'use strict';
 
-    
-     
-var gradx_selector = function(id) {
-    this.ele = document.getElementById(id);
-    this.ins= [];
-    
+//make me jquery UI  independent
+if (typeof jQuery.fn.draggable === "undefined") {
 
-};
-gradx_selector.prototype = {
-    
-    
-    
-    mouse_down: function() {
-        add_event(window,'mousemove', this.drag_ele);
-            
-    },
-        
-    mouse_up: function() {
-    //add_event(window,'mousemove', this.drag_ele);
-            
-    },
+    (function($) {
 
-    drag_ele: function(e) {
-    // this.ele.style.position = 'absolute';
-    //this.ele.style.top = e.clientY + 'px';
-    //this.ele.style.left = e.clientX + 'px';
-    //          this.obj.drag();
-    },
-        
-    draggable: function(obj) {
-        var ele = this.ele;
-        ele.style.top = "86px"; //minor adjustment
-        Drag.init(ele,null,6,406,86 ,86);
-        return this;
-    },
-        
-    show: function() {
-        this.ele.style.display = "block";
-    },
-        
-    hide: function() {
-        this.ele.style.display = "none";
-    },
-    
-    css: function(attr,value) {
-        //very unreliable -> I know ;)
-        if(typeof value == "undefined")
-            return this.ele.style[attr]; //no chaining
-        else this.ele.style[attr] = value;
-        
-        return this; //lets chain them
-    },
-        
-    append: function(html) {
-        this.ele.innerHTML += html;
-    },
-        
-    click: function(func) {
-        add_event(this.ele,'click',func);
-    }
-        
-        
-};
-    
-    
+        $.fn.draggable = function() {
+            console.log(this);
+            var ele = document.getElementById(this.attr("id"));
+            ele.style.top = "121px";
+            Drag.init(ele, null, 26, 426, 86, 86);
+            return this;
+        };
 
+    }(jQuery));
+
+}
 
 var gradx = {
-        
-    rand_RGB : [],
-    rand_pos : [],
-    id:null,
-    slider_ids:[],
-    slider_index:0, //global index for sliders
-    sliders: [],//contains styles of each slider
-    direction: "left",//direction of gradient 
+    rand_RGB: [],
+    rand_pos: [],
+    id: null,
+    slider_ids: [],
+    slider_index: 0, //global index for sliders
+    sliders: [], //contains styles of each slider
+    direction: "left", //direction of gradient or position of centre in case of radial gradients
+    type: "linear", //linear or radial
+    shape: "cover", //radial gradient size
     slider_hovered: [],
-    
-    jQ_present : true,
-
+    jQ_present: true,
+    code_shown: false,
     check_jQ: function() {
-        if(typeof jQuery == "undefined" && typeof $ == "undefined") {
-            //doing all the hardwork so that it becomes easy to move to a robust framework such as jquery
-            this.jQ_present = false;
-            this.gx = function(id) {
-                //very specific code
-                id = id.replace("#",""); //make it comptaible with Sizzle and vanilla javascript
-       
-                return new gradx_selector(id);
-            }
-        }
-        else if(typeof jQuery == "undefined") {
-            this.gx = $;
-        }else {
-            this.gx = jQuery;
-        }
 
+        //handle any library conflicts here
+        this.gx = jQuery;
     },
-
-    add_event: function(el,evt,evt_func) {
-        add_event(el,evt,evt_func);
+    //very lazy to replace this by jQuery
+    add_event: function(el, evt, evt_func) {
+        add_event(el, evt, evt_func);
     },
-        
-    get_random_position : function() {        
+    get_random_position: function() {
         var pos;
-            
+
         do {
-            pos = parseInt(Math.random()*100);                
-        }            
-        while(this.rand_pos.indexOf(pos) != -1); 
-            
-        this.rand_pos.push(pos); 
+            pos = parseInt(Math.random() * 100);
+        }
+        while (this.rand_pos.indexOf(pos) != -1);
+
+        this.rand_pos.push(pos);
         return pos;
-             
+
     },
-        
-        
-    get_random_rgb : function() {
- 
-        var R,G,B,color;
-            
+    get_random_rgb: function() {
+
+        var R, G, B, color;
+
         do {
-            R = parseInt(Math.random()*255);
-            G = parseInt(Math.random()*255);
-            B = parseInt(Math.random()*255);
-            
-            color = "rgb("+R+", "+G+", "+B+")";
-        }            
-        while(this.rand_RGB.indexOf(color) != -1); 
-            
-        this.rand_RGB.push(color); 
+            R = parseInt(Math.random() * 255);
+            G = parseInt(Math.random() * 255);
+            B = parseInt(Math.random() * 255);
+
+            color = "rgb(" + R + ", " + G + ", " + B + ")";
+        }
+        while (this.rand_RGB.indexOf(color) > -1);
+
+        this.rand_RGB.push(color);
         return color;
 
     },
-        
-                                 
-            
     //if target element is specified the target's style (background) is updated
-    update_target : function() {
-                
+    update_target: function() {
+
     },
-                        
-    //apply styles on fly        
-    apply_style : function(ele,value) {
-              
-              
-        //add cross-browser compatibility
-        var values = [  
-        "-webkit-linear-gradient("+value+")",
-        "-moz-linear-gradient("+value+")",
-        "-ms-linear-gradient("+value+")",
-        "-o-linear-gradient("+value+")",
-        "linear-gradient("+value+")"
-        ];
-                    
-                    
-                                
-        var len = values.length;
-                                
-        while(len>=0){
-            len--;
-            ele.css("background",values[len]);
+    //apply styles on fly
+    apply_style: function(ele, value) {
+
+        var type = 'linear';
+
+        if (gradx.type != 'linear') {
+            type = 'radial';
         }
-  
+
+        if (value.indexOf(this.direction) > -1) {
+            //add cross-browser compatibility
+            var values = [
+                "-webkit-" + type + "-gradient(" + value + ")",
+                "-moz-" + type + "-gradient(" + value + ")",
+                "-ms-" + type + "-gradient(" + value + ")",
+                "-o-" + type + "-gradient(" + value + ")",
+                type + "-gradient(" + value + ")"
+            ];
+        } else {
+            //normal color
+            values = [value];
+        }
+
+
+
+        var len = values.length, css = '';
+
+        while (len > 0) {
+            len--;
+            ele.css("background", values[len]);
+            css += values[len] + "\n";
+        }
+
+        gradx.gx('#gradx_code').html(css);
+ 
     },
-            
-    //on load 
-    apply_default_styles : function() {
+    //on load
+    apply_default_styles: function() {
         this.update_style_array()
         var value = this.get_style_value();
-        this.apply_style(this.panel,value);  
+        this.apply_style(this.panel, value);
     },
-
     //update the slider_values[] while dragging
-    update_style_array : function() {
-                   
+    update_style_array: function() {
+
         this.sliders = [];
-            
-        var len = this.slider_index,
-        i, offset, position, id; 
-            
-        for(i=0; i< len; i++ ){
-            id = "#gradx_slider_"+i;
+
+        var len = gradx.slider_ids.length,
+                i, offset, position, id;
+
+        for (i = 0; i < len; i++) {
+            id = "#" + gradx.slider_ids[i];
             offset = parseInt(gradx.gx(id).css("left"));
-            position = parseInt((offset/ gradx.container_width) * 100);
-            gradx.sliders.push([gradx.gx(id).css("background-color"),position]);
+            position = parseInt((offset / gradx.container_width) * 100);
+            gradx.sliders.push([gradx.gx(id).css("background-color"), position]);
 
         }
-                    
-        this.sliders.sort(function (A, B) {
-            if (A[1] > B[1]) return 1;
-            else return -1;
+
+        this.sliders.sort(function(A, B) {
+            if (A[1] > B[1])
+                return 1;
+            else
+                return -1;
         });
     },
+    //creates the complete css background value to later apply style
+    get_style_value: function() {
 
-    //creates the complete css background value to later apply style 
-    get_style_value : function() {
-                                      
-        var len = this.slider_index;
-                  
-        var style_str = "",suffix="";
-        for(var i=0; i<len; i++) {                                            
-            style_str += suffix + (this.sliders[i][0]+ " " + this.sliders[i][1] +"%");
-            suffix = " , "; //add , from next iteration
+        var len = gradx.slider_ids.length;
+
+        if (len == 1) {
+            //since only one slider , so simple background
+
+            style_str = this.sliders[0][0];
+        } else {
+            var style_str = "", suffix = "";
+            for (var i = 0; i < len; i++) {
+                style_str += suffix + (this.sliders[i][0] + " " + this.sliders[i][1] + "%");
+                suffix = " , "; //add , from next iteration
+            }
+
+            if (this.type == 'linear') {
+                //direction, [color stoppers]
+                style_str = this.direction + " , " + style_str; //add direction for gradient
+            } else {
+                //position, type size, [color stoppers]
+                style_str = this.direction + " , " + this.type + " " + this.shape + " , " + style_str;
+            }
         }
-                  
-        style_str = this.direction + " , " + style_str; //add direction for gradient
-                  
+
         return style_str;
     },
-                
-                
     //@input rgb string rgb(<red>,<green>,<blue>)
     //@output rgb object of form { r: <red> , g: <green> , b : <blue>}
-    get_rgb_obj : function(rgb) {
-        
+    get_rgb_obj: function(rgb) {
+
         //rgb(r,g,b)
         rgb = rgb.split("(");
         //r,g,b)
         rgb = rgb[1];
-        //r g b) 
+        //r g b)
         rgb = rgb.split(",");
-        
+
         return {
             r: parseInt(rgb[0]),
             g: parseInt(rgb[1]),
             b: parseInt(rgb[2])
-        }
-        
-    },            
-    load_info : function(ele) {
-        var id = "#"+ele.id;
+        };
+
+    },
+    load_info: function(ele) {
+        var id = "#" + ele.id;
         this.current_slider_id = id;
-        //check if current clicked element is an slider          
-        if(this.slider_ids.indexOf(ele.id) != -1) { //javascript does not has # in its id
-            
+        //check if current clicked element is an slider
+        if (this.slider_ids.indexOf(ele.id) > -1) { //javascript does not has # in its id
+
             var color = gradx.gx(id).css("backgroundColor");
             //but what happens if @color is not in RGB ? :(
             var rgb = this.get_rgb_obj(color);
-            
+
             var left = gradx.gx(id).css("left");
-            if(parseInt(left) > 120 && parseInt(left) < 272) {
+            if (parseInt(left) > 120 && parseInt(left) < 272) {
                 gradx.gx("#gradx_slider_info") //info element cached before
-                .css("left",left)
-                .show();
-                     
-            }else {
-                if(parseInt(left) > 120) {
+                        .css("left", left)
+                        .show();
+
+            } else {
+                if (parseInt(left) > 120) {
                     left = "272px";
-                }else{
+                } else {
                     left = "120px";
                 }
-                
+
                 gradx.gx("#gradx_slider_info") //info element cached before
-                .css("left",left)
-                .show();
-                 
+                        .css("left", left)
+                        .show();
+
             }
             gradx.cp.ColorPickerSetColor(rgb);
 
         }
- 
+
     },
-                
-                
     //add slider
-    add_slider : function(obj) {
-                            
-                    
-        var id,slider,k,position,value,delta;
-                    
-        if(typeof obj == "undefined") {
-                
-            if(typeof sliders == "undefined") {
-                sliders =  [ //default sliders
-                { 
-                    color: gradx.get_random_rgb(),                
-                    position: gradx.get_random_position() //x percent of gradient panel(400px)
-                },
-                {
-                    color: gradx.get_random_rgb(),
-                    position: gradx.get_random_position() 
-                }
+    add_slider: function(obj) {
+
+
+        var id, slider, k, position, value, delta;
+
+        if (typeof obj == "undefined") {
+
+            if (typeof sliders == "undefined") {
+                sliders = [//default sliders
+                    {
+                        color: gradx.get_random_rgb(),
+                        position: gradx.get_random_position() //x percent of gradient panel(400px)
+                    },
+                    {
+                        color: gradx.get_random_rgb(),
+                        position: gradx.get_random_position()
+                    }
                 ]
 
             }
-                
+
             obj = sliders;
         }
-        dgs = [];
-                  
-        for(k in obj) {
-                        
-            //convert % to px based on containers width
-            delta = 6; //range: -32px tp 378px
-            position = parseInt( (obj[k].position*this.container_width) / 100 ) + delta + "px";
-                     
-            id = "gradx_slider_"+(this.slider_index); //create an id for this slider
-            this.sliders.push(                             
-                [
-                obj[k].color,
-                obj[k].position
-                ]
-                );
-                                
-            this.slider_ids.push(id); //for reference wrt to id        
 
-            slider = "<div class='gradx_slider' id='"+id+"'></div>";
-            gradx.gx("#gradx_start_sliders_"+this.id).append(slider);
-                
-            gradx.gx('#'+id).css("backgroundColor",obj[k].color).css("left",position);
+        for (k in obj) {
+
+            //convert % to px based on containers width
+            delta = 26; //range: 26px tp 426px
+            position = parseInt((obj[k].position * this.container_width) / 100) + delta + "px";
+
+            id = "gradx_slider_" + (this.slider_index); //create an id for this slider
+            this.sliders.push(
+                    [
+                        obj[k].color,
+                        obj[k].position
+                    ]
+                    );
+
+            this.slider_ids.push(id); //for reference wrt to id
+
+            slider = "<div class='gradx_slider' id='" + id + "'></div>";
+            gradx.gx("#gradx_start_sliders_" + this.id).append(slider);
+
+            gradx.gx('#' + id).css("backgroundColor", obj[k].color).css("left", position);
             this.slider_index++;
         }
 
-        for(var i=0; i< this.slider_index;i++) {
-            
-            gradx.gx('#'+this.slider_ids[i]).draggable({
-                containment:'parent',
+        for (var i = 0, len = this.slider_ids.length; i < len; i++) {
+
+            gradx.gx('#' + this.slider_ids[i]).draggable({
+                containment: 'parent',
                 axis: 'x',
-                
                 start: function() {
-                    if(gradx.jQ_present)
-                    gradx.current_slider_id = "#"+gradx.gx(this).attr("id"); //got full jQuery power here !  
+                    if (gradx.jQ_present)
+                        gradx.current_slider_id = "#" + gradx.gx(this).attr("id"); //got full jQuery power here !
                 },
-                    
                 drag: function() {
-                                
+
                     gradx.update_style_array();
                     gradx.apply_style(gradx.panel, gradx.get_style_value());
                     var left = gradx.gx(gradx.current_slider_id).css("left");
 
 
-                    if(parseInt(left) > 120 && parseInt(left) < 272) {
+                    if (parseInt(left) > 120 && parseInt(left) < 272) {
                         gradx.gx("#gradx_slider_info") //info element cached before
-                        .css("left",left)
-                        .show();
-                     
-                    }else {
-                        if(parseInt(left) > 120) {
+                                .css("left", left)
+                                .show();
+
+                    } else {
+                        if (parseInt(left) > 120) {
                             left = "272px";
-                        }else{
+                        } else {
                             left = "120px";
                         }
-                
+
                         gradx.gx("#gradx_slider_info") //info element cached before
-                        .css("left",left)
-                        .show();
-                 
+                                .css("left", left)
+                                .show();
+
                     }
                     var color = gradx.gx(gradx.current_slider_id).css("backgroundColor");
                     //but what happens if @color is not in RGB ? :(
                     var rgb = gradx.get_rgb_obj(color);
                     gradx.cp.ColorPickerSetColor(rgb);
-                            
-                }          
-    
-            }).click(function(){
+
+                }
+
+            }).click(function() {
                 gradx.load_info(this);
                 return false;
             });
         }
-            
-            
+
+
     },
-            
-    load_gradx : function(id) {
+    generate_options: function(options) {
+
+        var len = options.length,
+                name, state,
+                str = '';
+
+        for (var i = 0; i < len; i++) {
+
+            name = options[i].split(" ");
+
+            name = name[0];
+
+            if (i < 2) {
+                state = name[1];
+            } else {
+                state = '';
+            }
+
+            name = name.replace("-", " ");
+
+            str += '<option value=' + options[i] + ' ' + state + '>' + name + '</option>';
+
+        }
+
+        return str;
+    },
+    load_gradx: function(id) {
         this.check_jQ();
         this.me = gradx.gx(id);
-        this.id = id.replace("#","");
+        this.id = id.replace("#", "");
         id = this.id;
         this.current_slider_id = false;
-        var html = "<div class='gradX'><div id='gradx_add_slider' class='gradx_add_slider btn'><i class='icon-add'></i>add</div>\n\
-                                    <div class='gradx_container' id='gradx_"+id+"'>\n\
-                                         \n\
-                                        <div id='gradx_stop_sliders_"+id+"'></div>\n\
-                                        <div class='gradx_panel' id='gradx_panel_"+id+"'></div>\n\
-                                         <div class='gradx_start_sliders' id='gradx_start_sliders_"+id+"'>\n\
-                                        <div class='cp-default' id='gradx_slider_info'></div> \n\
-                                        </div>\n\
-                                    </div></div>";
-                
+        var html = "<div class='gradX'>\n\
+                        <div id='gradx_add_slider' class='gradx_add_slider gradx_btn'><i class='icon icon-add'></i>add</div>\n\
+                        <select id='gradx_gradient_type' class='gradx_gradient_type'>\n\
+                            <option value='linear'>Linear</option>\n\
+                            <option value='circle'>Radial - Circle</option>\n\
+                            <option value='ellipse'>Radial - Ellipse</option>\n\
+                        </select>\n\
+                        <select id='gradx_gradient_subtype' class='gradx_gradient_type'>\n\
+                            <option id='gradx_gradient_subtype_desc' value='gradient-direction' disabled>gradient direction</option>\n\
+                            <option value='left' selected>Left</option>\n\
+                            <option value='right'>Right</option>\n\
+                            <option value='top'>Top</option>\n\
+                            <option value='bottom'>Bottom</option>\n\
+                        </select>\n\
+                        <select id='gradx_gradient_subtype2' class='gradx_gradient_type gradx_hide'>\n\
+                        </select>\n\
+                        <select id='gradx_radial_gradient_size' class='gradx_gradient_type gradx_hide'>\n\
+                        </select>\n\
+                        <div class='gradx_container' id='gradx_" + id + "'>\n\
+                            <div id='gradx_stop_sliders_" + id + "'></div>\n\
+                            <div class='gradx_panel' id='gradx_panel_" + id + "'></div>\n\
+                            <div class='gradx_start_sliders' id='gradx_start_sliders_" + id + "'>\n\
+                                <div class='cp-default' id='gradx_slider_info'>\n\
+                                    <div id='gradx_slider_controls'>\n\
+                                        <div id='gradx_delete_slider' class='gradx_btn'><i class='icon icon-remove'></i>delete</div>\n\
+                                    </div>\n\
+                                    <div id='gradx_slider_content'></div>\n\
+                                </div> \n\
+                            </div>\n\
+                        </div>\n\
+                        <div id='gradx_show_code' class='gradx_show_code gradx_btn'><i class='icon icon-file-css'></i><span>show the code</span></div>\n\
+                        <div id='gradx_show_presets' class='gradx_show_presets gradx_btn'><i class='icon icon-preset'></i><span>show presets</span></div>\n\
+                        <textarea class='gradx_code' id='gradx_code'></textarea>\n\
+                    </div>";
+
         this.me.append(html);
 
+
+        //generates html to select the different gradient sizes
+        // *only available for radial gradients
+        var gradient_size_val = ["gradient-size disabled", "closest-side selected", "closest-corner", "farthest-side", "farthest-corner", "contain", "cover"],
+                option_str = '';
+
+
+        option_str = gradx.generate_options(gradient_size_val);
+
+        gradx.gx('#gradx_radial_gradient_size').html(option_str);
+
+
         //cache divs for fast reference
-                    
-        this.container = gradx.gx("#gradx_"+id);
-        this.panel = gradx.gx("#gradx_panel_"+id);
+
+        this.container = gradx.gx("#gradx_" + id);
+        this.panel = gradx.gx("#gradx_panel_" + id);
         //.hide();
         //this.info.hide();
         this.container_width = 400 //HARDCODE;
@@ -418,72 +428,153 @@ var gradx = {
 
         gradx.add_event(document, 'click', function() {
 //            if(!gradx.jQ_present){
-                if(!gradx.slider_hovered[id]){console.log("g");
-                    gradx.gx("#gradx_slider_info").hide();
-                    return false;
-                }
-        })
-                                    
+            if (!gradx.slider_hovered[id]) {
+                gradx.gx("#gradx_slider_info").hide();
+                return false;
+            }
+        });
+
 
 
         gradx.gx('#gradx_add_slider').click(function() {
             gradx.add_slider([
-            { 
-                color: gradx.get_random_rgb(),
-                position: gradx.get_random_position() //no % symbol
-            }
+                {
+                    color: gradx.get_random_rgb(),
+                    position: gradx.get_random_position() //no % symbol
+                }
             ]);
             gradx.update_style_array();
             gradx.apply_style(gradx.panel, gradx.get_style_value());//(where,style)
 
         });
-              
-        /*gradx.cp = ColorPicker(
 
-            document.getElementById('gradx_slider_info'),
+        //cache the element
+        gradx.cp = gradx.gx('#gradx_slider_content');
 
-            function(hex, hsv, rgb) {
-                if(gradx.current_slider_id != false) {
-                    gradx.gx(gradx.current_slider_id).css('background-color',hex);
+        //call the colorpicker plugin
+        gradx.cp.ColorPicker({
+            onChange: function(hsb, hex, rgb) {
+                if (gradx.current_slider_id != false) {
+                    gradx.gx(gradx.current_slider_id).css('background-color', hex);
                     gradx.update_style_array();
                     gradx.apply_style(gradx.panel, gradx.get_style_value());
                 }
-            //console.log(hsv.h, hsv.s, hsv.v);         // [0-359], [0-1], [0-1]
-            //console.log(rgb.r, rgb.g, rgb.b);         // [0-255], [0-255], [0-255]
-            //document.body.style.backgroundColor = hex;        // #HEX
-            });*/
-        
-        gradx.cp = gradx.gx('#gradx_slider_info');
-        
-        gradx.cp.ColorPicker({
-            
-            
-            onChange: function (hsb, hex, rgb) {
-                if(gradx.current_slider_id != false) {
-                    gradx.gx(gradx.current_slider_id).css('background-color',hex);
-                    gradx.update_style_array();
-                    gradx.apply_style(gradx.panel, gradx.get_style_value());
-                }                
             },
-            
             onSubmit: function() {
                 gradx.gx("#gradx_slider_info").hide();
             },
-            
             flat: true
+        });
+
+        gradx.gx('#gradx_delete_slider').click(function() {
+            gradx.gx(gradx.current_slider_id).remove();
+            gradx.gx("#gradx_slider_info").hide();
+            var id = gradx.current_slider_id.replace("#", "");
+
+            //remove all references from array for current deleted slider
+
+            for (var i = 0; i < gradx.slider_ids.length; i++) {
+                if (gradx.slider_ids[i] == id) {
+                    gradx.slider_ids.splice(i, 1);
+                }
+            }
+
+            //apply modified style after removing the slider
+            gradx.update_style_array();
+            gradx.apply_style(gradx.panel, gradx.get_style_value());
+
+            gradx.current_slider_id = false; //no slider is selected
+
+        });
+
+        gradx.gx('#gradx_code').focus(function() {
+            var $this = gradx.gx(this);
+            $this.select();
+
+            // Work around Chrome's little problem
+            $this.mouseup(function() {
+                // Prevent further mouseup intervention
+                $this.unbind("mouseup");
+                return false;
+            });
         })
-        
-            
-        gradx.add_event(document.getElementById(id),'mouseout',function(){
+
+        gradx.gx('#gradx_gradient_type').change(function() {
+
+            var type = gradx.gx(this).val(), options, option_str = '';
+
+            if (type !== "linear") {
+                //gradx.gx('#gradx_radial_gradient_size').show();
+
+                options = ["horizontal-center disabled", "center selected", "left", "right"];
+                gradx.gx('#gradx_gradient_subtype').html(gradx.generate_options(options));
+
+                options = ["vertical-center disabled", "center selected", "top", "bottom"];
+                gradx.gx('#gradx_gradient_subtype2').html(gradx.generate_options(options)).show();
+
+            }
+
+            gradx.type = type;
+            gradx.direction = gradx.gx('#gradx_gradient_subtype').val();
+            gradx.apply_style(gradx.panel, gradx.get_style_value());//(where,style)
+        });
+
+        gradx.gx('#gradx_gradient_subtype').change(function() {
+
+            if (gradx.type === 'linear') {
+                gradx.direction = gradx.gx(this).val();
+            } else {
+                var h = gradx.gx(this).val();
+                var v = gradx.gx('#gradx_gradient_subtype2').val();
+                gradx.direction = h + " " + v;
+            }
+            gradx.apply_style(gradx.panel, gradx.get_style_value());//(where,style)
+
+        });
+
+        gradx.gx('#gradx_gradient_subtype2').change(function() {
+
+            var h = gradx.gx('#gradx_gradient_subtype').val();
+            var v = gradx.gx(this).val();
+            gradx.direction = h + " " + v;
+            gradx.apply_style(gradx.panel, gradx.get_style_value());//(where,style)
+
+        });
+
+        gradx.gx('#gradx_radial_gradient_size').change(function() {
+            gradx.shape = gradx.gx(this).val();
+            gradx.apply_style(gradx.panel, gradx.get_style_value());//(where,style)
+
+        })
+
+        gradx.gx('#gradx_show_code').click(function() {
+
+            if (gradx.code_shown) {
+                //hide it
+
+                gradx.code_shown = false;
+                gradx.gx('#gradx_show_code span').text("show the code");
+                gradx.gx("#gradx_code").hide();
+            }
+            else {
+                //show it
+
+                gradx.gx('#gradx_show_code span').text("hide the code");
+                gradx.gx("#gradx_code").show();
+                gradx.code_shown = true;
+            }
+        });
+
+        gradx.add_event(document.getElementById(id), 'mouseout', function() {
             gradx.slider_hovered[id] = false;
         });
-        gradx.add_event(document.getElementById(id),'mouseover',function(){
+        gradx.add_event(document.getElementById(id), 'mouseover', function() {
             gradx.slider_hovered[id] = true;
 
         });
-            
+
     }
-            
+
 
 
 
@@ -491,24 +582,25 @@ var gradx = {
 
 
 
-function  add_event(element, event, event_function) 
-{       
-    if(element.attachEvent) //Internet Explorer
+function  add_event(element, event, event_function)
+{
+    if (element.attachEvent) //Internet Explorer
         element.attachEvent("on" + event, function() {
             event_function.call(element);
-        }); 
-    else if(element.addEventListener) //Firefox & company
-        element.addEventListener(event, event_function, false); //don't need the 'call' trick because in FF everything already works in the right way          
-}; 
+        });
+    else if (element.addEventListener) //Firefox & company
+        element.addEventListener(event, event_function, false); //don't need the 'call' trick because in FF everything already works in the right way
+}
+;
 
 
 var gradX = function(id, sliders, target) {
-    
-        
-    if(typeof target == "undefined") {
+
+
+    if (typeof target === "undefined") {
         target = false; //no target element
     }
-    
+
     gradx.load_gradx(id);
     gradx.apply_default_styles();
 
