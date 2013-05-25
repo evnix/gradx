@@ -26,3 +26,4 @@ Look at demo.html for a complete example
 
 Includes:
 dom-drag.js
+jQuery color picker
