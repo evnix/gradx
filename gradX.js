@@ -93,7 +93,7 @@ var gradx = {
     //if target element is specified the target's style (background) is updated
     update_target: function(values) {
         
-        if (this.targets) {
+        if (this.targets.length > 0) {
             //target elements exist
 
             var i, j, ele, len = this.targets.length, v_len = values.length;
@@ -665,7 +665,7 @@ var gradX = function(id, _options) {
 
 
     var options = {
-        targets: false, //[element selector] -> array
+        targets: [], //[element selector] -> array
         sliders: [],
         direction: 'left',
         //if linear left | top | right | bottom
