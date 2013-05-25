@@ -25,5 +25,5 @@ Note: gradx only supports id here.
 Look at demo.html for a complete example
 
 Includes:
-dom-drag.js
+dom-drag.js  
 jQuery color picker
