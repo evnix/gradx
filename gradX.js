@@ -398,7 +398,7 @@ var gradx = {
                             </div>\n\
                         </div>\n\
                         <div id='gradx_show_code' class='gradx_show_code gradx_btn'><i class='icon icon-file-css'></i><span>show the code</span></div>\n\
-                        <div id='gradx_show_presets' class='gradx_show_presets gradx_btn'><i class='icon icon-preset'></i><span>show presets</span></div>\n\
+                        <div id='gradx_show_presets' style='display:none' class='gradx_show_presets gradx_btn'><i class='icon icon-preset'></i><span>show presets</span></div>\n\
                         <textarea class='gradx_code' id='gradx_code'></textarea>\n\
                     </div>";
 
