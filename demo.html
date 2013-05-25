@@ -8,7 +8,7 @@
       <!--  <script src="lib/js/jquery-ui.js"></script>
        -->
 
-        <link type="text/css" rel="stylesheet" href="lib/css/jquery-ui.css" />
+       <!-- <link type="text/css" rel="stylesheet" href="lib/css/jquery-ui.css" />-->
         <link type="text/css" rel="stylesheet" href="gradX.css" />
         <link type="text/css" rel="stylesheet" href="colorpicker/css/colorpicker.css" />
         <script src="colorpicker/js/colorpicker.js"></script>
@@ -25,7 +25,14 @@
                 left: 30%;
                 top: 30%;
             }   
-         </style>
+            
+            #target {
+                width: 300px;
+                height: 300px;
+                border-radius: 150px;
+                border: 1px solid;
+            }
+          </style>
     </head>
 
     
@@ -34,11 +41,20 @@
       <!--     <input type='text' id="basic" value='red' /> -->
         <div id="gradX" ></div>
 
+        <div class="target" id="target"></div>
 
 
         <script>
 
-            gradX("#gradX");
+            gradX("#gradX", {
+                change: function(s,p) {
+                    console.log(s);
+                    console.log(p);
+                },
+                type: 'ellipse'        ,
+                direction: 'center, left',
+                targets: [".target"]
+            });
 
         </script>
 

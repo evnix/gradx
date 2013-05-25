@@ -4,8 +4,6 @@
  *
  * SAMPLE USAGE DETAILS :
  * 
- * gradx (id of element, {sliders}[OPTIONAL], id of target element[OPTIONAL])
- *
  * sliders structure :
  *
  * [
@@ -30,7 +28,7 @@ if (typeof jQuery.fn.draggable === "undefined") {
     (function($) {
 
         $.fn.draggable = function() {
-            console.log(this);
+            //console.log(this);
             var ele = document.getElementById(this.attr("id"));
             ele.style.top = "121px";
             Drag.init(ele, null, 26, 426, 86, 86);
@@ -54,7 +52,7 @@ var gradx = {
     slider_hovered: [],
     jQ_present: true,
     code_shown: false,
-    check_jQ: function() {
+    load_jQ: function() {
 
         //handle any library conflicts here
         this.gx = jQuery;
@@ -69,7 +67,7 @@ var gradx = {
         do {
             pos = parseInt(Math.random() * 100);
         }
-        while (this.rand_pos.indexOf(pos) != -1);
+        while (this.rand_pos.indexOf(pos) > -1);
 
         this.rand_pos.push(pos);
         return pos;
@@ -93,8 +91,21 @@ var gradx = {
 
     },
     //if target element is specified the target's style (background) is updated
-    update_target: function() {
+    update_target: function(values) {
+        
+        if (this.targets) {
+            //target elements exist
 
+            var i, j, ele, len = this.targets.length, v_len = values.length;
+            for (i = 0; i < len; i++) {
+                ele = gradx.gx(this.targets[i]);
+
+                for (j = 0; j < v_len; j++) {
+                    ele.css("background-image", values[j]);
+                }
+
+            }
+        }
     },
     //apply styles on fly
     apply_style: function(ele, value) {
@@ -129,8 +140,13 @@ var gradx = {
             css += values[len] + "\n";
         }
 
+        //call the userdefined change function
+        this.change(this.sliders, values);
+        this.update_target(values);
+
+
         gradx.gx('#gradx_code').html(css);
- 
+
     },
     //on load
     apply_default_styles: function() {
@@ -240,29 +256,28 @@ var gradx = {
 
     },
     //add slider
-    add_slider: function(obj) {
+    add_slider: function(sliders) {
 
 
         var id, slider, k, position, value, delta;
 
-        if (typeof obj == "undefined") {
 
-            if (typeof sliders == "undefined") {
-                sliders = [//default sliders
-                    {
-                        color: gradx.get_random_rgb(),
-                        position: gradx.get_random_position() //x percent of gradient panel(400px)
-                    },
-                    {
-                        color: gradx.get_random_rgb(),
-                        position: gradx.get_random_position()
-                    }
-                ]
+        if (sliders.length === 0) {
+            sliders = [//default sliders
+                {
+                    color: gradx.get_random_rgb(),
+                    position: gradx.get_random_position() //x percent of gradient panel(400px)
+                },
+                {
+                    color: gradx.get_random_rgb(),
+                    position: gradx.get_random_position()
+                }
+            ];
 
-            }
-
-            obj = sliders;
         }
+
+
+        obj = sliders;
 
         for (k in obj) {
 
@@ -361,8 +376,17 @@ var gradx = {
 
         return str;
     },
-    load_gradx: function(id) {
-        this.check_jQ();
+    generate_radial_options: function() {
+
+        var options;
+        options = ["horizontal-center disabled", "center selected", "left", "right"];
+        gradx.gx('#gradx_gradient_subtype').html(gradx.generate_options(options));
+
+        options = ["vertical-center disabled", "center selected", "top", "bottom"];
+        gradx.gx('#gradx_gradient_subtype2').html(gradx.generate_options(options)).show();
+
+    },
+    load_gradx: function(id, sliders) {
         this.me = gradx.gx(id);
         this.id = id.replace("#", "");
         id = this.id;
@@ -423,7 +447,7 @@ var gradx = {
         //.hide();
         //this.info.hide();
         this.container_width = 400 //HARDCODE;
-        this.add_slider();
+        this.add_slider(sliders);
 
 
         gradx.add_event(document, 'click', function() {
@@ -497,7 +521,7 @@ var gradx = {
                 $this.unbind("mouseup");
                 return false;
             });
-        })
+        });
 
         gradx.gx('#gradx_gradient_type').change(function() {
 
@@ -506,18 +530,51 @@ var gradx = {
             if (type !== "linear") {
                 //gradx.gx('#gradx_radial_gradient_size').show();
 
-                options = ["horizontal-center disabled", "center selected", "left", "right"];
-                gradx.gx('#gradx_gradient_subtype').html(gradx.generate_options(options));
-
-                options = ["vertical-center disabled", "center selected", "top", "bottom"];
-                gradx.gx('#gradx_gradient_subtype2').html(gradx.generate_options(options)).show();
-
+                gradx.generate_radial_options();
             }
 
             gradx.type = type;
             gradx.direction = gradx.gx('#gradx_gradient_subtype').val();
             gradx.apply_style(gradx.panel, gradx.get_style_value());//(where,style)
         });
+
+        //change type onload userdefined
+        if (this.type !== "linear") {
+            gradx.gx('#gradx_gradient_type').val(this.type);
+            gradx.generate_radial_options();
+
+            var h, v;
+
+            if (this.direction !== 'left') {
+                //user has passed his own direction
+                var center;
+                if (this.direction.indexOf(",") > -1) {
+                    center = this.direction.split(",");
+                } else {
+                    //tolerate user mistakes
+                    center = this.direction.split(" ");
+                }
+
+                h = center[0];
+                v = center[1];
+
+                //update the center points in the corr. select boxes
+                gradx.gx('#gradx_gradient_subtype').val(h);
+                gradx.gx('#gradx_gradient_subtype2').val(v);
+            } else {
+                var h = gradx.gx('#gradx_gradient_subtype').val();
+                var v = gradx.gx('#gradx_gradient_subtype2').val();
+            }
+
+            gradx.direction = h + " " + v;
+            gradx.apply_style(gradx.panel, gradx.get_style_value());//(where,style)
+        } else {
+
+            //change direction if not left
+            if (this.direction !== 'left') {
+                gradx.gx('#gradx_gradient_subtype').val(this.direction);
+            }
+        }
 
         gradx.gx('#gradx_gradient_subtype').change(function() {
 
@@ -541,11 +598,12 @@ var gradx = {
 
         });
 
+        //not visible
         gradx.gx('#gradx_radial_gradient_size').change(function() {
             gradx.shape = gradx.gx(this).val();
             gradx.apply_style(gradx.panel, gradx.get_style_value());//(where,style)
 
-        })
+        });
 
         gradx.gx('#gradx_show_code').click(function() {
 
@@ -565,10 +623,19 @@ var gradx = {
             }
         });
 
-        gradx.add_event(document.getElementById(id), 'mouseout', function() {
+        //show or hide onload
+        if (gradx.code_shown) {
+            //show it
+
+            gradx.gx('#gradx_show_code span').text("hide the code");
+            gradx.gx("#gradx_code").show();
+
+        }
+
+        gradx.add_event(document.getElementById('gradx_slider_info'), 'mouseout', function() {
             gradx.slider_hovered[id] = false;
         });
-        gradx.add_event(document.getElementById(id), 'mouseover', function() {
+        gradx.add_event(document.getElementById('gradx_slider_info'), 'mouseover', function() {
             gradx.slider_hovered[id] = true;
 
         });
@@ -594,14 +661,38 @@ function  add_event(element, event, event_function)
 ;
 
 
-var gradX = function(id, sliders, target) {
+var gradX = function(id, _options) {
 
 
-    if (typeof target === "undefined") {
-        target = false; //no target element
+    var options = {
+        targets: false, //[element selector] -> array
+        sliders: [],
+        direction: 'left',
+        //if linear left | top | right | bottom
+        //if radial left | center | right , top | center | bottom 
+        type: 'linear', //linear | circle | ellipse
+        code_shown: false, //false | true
+        change: function(sliders, styles) {
+            //nothing to do here by default
+        }
+    };
+
+    //load jQuery library into gradx.gx
+    gradx.load_jQ();
+
+
+    /* merge _options into options */
+    gradx.gx.extend(options, _options);
+
+
+    for (var k in options) {
+
+        //load the options into gradx object
+        gradx[k] = options[k];
+
     }
 
-    gradx.load_gradx(id);
+    gradx.load_gradx(id, gradx.sliders);
     gradx.apply_default_styles();
 
 
