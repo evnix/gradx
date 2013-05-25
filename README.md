@@ -5,7 +5,7 @@ A gradient selector and modifier tool
 
 For complete Documentation, visit: http://codologic.com/page/gradx-jquery-javascript-gradient-selector-library
 
-
+For Demo, Visit: http://codologic.com/page/sites/all/files/gradx/demo.html
 
 gradx requires jQuery . 
 
