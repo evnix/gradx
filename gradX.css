@@ -100,10 +100,19 @@
     resize: vertical;
     font-family: 'Maven Pro', sans-serif;
     border: 0;
-    box-shadow: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    -o-box-shadow: none;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    -o-box-shadow: none !important;
+    line-height: 14px;
+    
+    /* the long awaited dream of 100% width comes true */
+    /* All hail CSS3 */
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    
 
 }
 
@@ -123,7 +132,7 @@
 .gradx_add_slider {
     border: 1px solid black;
     width: 50px;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 
