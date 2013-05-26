@@ -33,7 +33,7 @@ Note: gradx only supports id here.
 Look at demo.html for a complete example
 
 Dependencies:
-[All of the below files are included]
-jQuery
-dom-drag.js or jQuery UI draggable  
-jQuery color picker 
+[All of the below files are included]  
+1. jQuery  
+2. dom-drag.js or jQuery UI draggable    
+3. jQuery color picker   
