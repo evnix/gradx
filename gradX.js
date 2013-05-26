@@ -391,7 +391,7 @@ var gradx = {
         this.id = id.replace("#", "");
         id = this.id;
         this.current_slider_id = false;
-        var html = "<div class='gradX'>\n\
+        var html = "<div class='gradx'>\n\
                         <div id='gradx_add_slider' class='gradx_add_slider gradx_btn'><i class='icon icon-add'></i>add</div>\n\
                         <select id='gradx_gradient_type' class='gradx_gradient_type'>\n\
                             <option value='linear'>Linear</option>\n\

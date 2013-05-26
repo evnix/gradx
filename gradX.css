@@ -3,7 +3,7 @@
 
 }
 
-.gradX {
+.gradx {
     position: absolute;
     background: #FAFAFA;
     background: -moz-linear-gradient(top, #FAFAFA 0%, #DFDFDF 100%);
@@ -17,7 +17,7 @@
     padding: 10px;}
 
 
-.gradX_container {
+.gradx_container {
     padding: 10px;
     background: white;
     padding-left: 16px;
@@ -31,13 +31,13 @@
 
 }
 
-.gradX_panel {
+.gradx_panel {
     width: 400px;
     height: 42px;
     border: 1px solid #ccc;
 }
 
-.gradX_start_sliders {
+.gradx_start_sliders {
     width: 412px;
     margin-top: 8px;
     margin-left: -0.4em;
@@ -51,7 +51,7 @@
     border: 1px solid #f1f1f1;
 }
 
-.gradX_slider {
+.gradx_slider {
     position: absolute;
     left: 0px;
 
@@ -63,13 +63,13 @@
     opacity: 0.6;
 }
 
-.gradX_slider:hover {
+.gradx_slider:hover {
     opacity: 1;
     cursor: move;
 }
 
 
-.gradX_slider:after {
+.gradx_slider:after {
     content: "";
     position: absolute;
     bottom: 10px;
@@ -99,7 +99,7 @@
     font-family: 'Maven Pro', sans-serif;
 }
 
-#gradX_slider_info {
+#gradx_slider_info {
     display: none;
     border: 1px solid #ccc;
     padding: 2px;
@@ -112,7 +112,7 @@
     padding-bottom: 4px;
 }
 
-.gradX_add_slider {
+.gradx_add_slider {
     border: 1px solid black;
     width: 50px;
     margin-bottom: 5px;
