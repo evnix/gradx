@@ -32,6 +32,8 @@ Note: gradx only supports id here.
 
 Look at demo.html for a complete example
 
-Includes:
-dom-drag.js  
-jQuery color picker
+Dependencies:
+[All of the below files are included]
+jQuery
+dom-drag.js or jQuery UI draggable  
+jQuery color picker 
