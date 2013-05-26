@@ -180,11 +180,12 @@
 .cp-default {
     border-radius: 6px;
     float: left;
-    margin-top: 11px;
-    margin-left: -172px;
-    position: absolute; 
-    z-index: 10;
+    margin-top: 13px;
+    margin-left: -96px;
+    position: absolute;
+    z-index: 10000;
 }
+
 .cp-default .picker {
     width: 200px;
     height: 200px;

@@ -92,7 +92,7 @@ var gradx = {
     },
     //if target element is specified the target's style (background) is updated
     update_target: function(values) {
-        
+
         if (this.targets.length > 0) {
             //target elements exist
 
@@ -233,12 +233,12 @@ var gradx = {
             var rgb = this.get_rgb_obj(color);
 
             var left = gradx.gx(id).css("left");
-            if (parseInt(left) > 120 && parseInt(left) < 272) {
+            if (parseInt(left) > 26 && parseInt(left) < 426) {
                 gradx.gx("#gradx_slider_info") //info element cached before
                         .css("left", left)
                         .show();
 
-            } else {
+            } /*else {
                 if (parseInt(left) > 120) {
                     left = "272px";
                 } else {
@@ -249,8 +249,8 @@ var gradx = {
                         .css("left", left)
                         .show();
 
-            }
-            gradx.cp.ColorPickerSetColor(rgb);
+            }*/
+            gradx.cp.spectrum("set", rgb);
 
         }
 
@@ -323,7 +323,7 @@ var gradx = {
                                 .css("left", left)
                                 .show();
 
-                    } else {
+                    } /*else {
                         if (parseInt(left) > 120) {
                             left = "272px";
                         } else {
@@ -334,11 +334,11 @@ var gradx = {
                                 .css("left", left)
                                 .show();
 
-                    }
+                    }*/
                     var color = gradx.gx(gradx.current_slider_id).css("backgroundColor");
                     //but what happens if @color is not in RGB ? :(
                     var rgb = gradx.get_rgb_obj(color);
-                    gradx.cp.ColorPickerSetColor(rgb);
+                    gradx.cp.spectrum("set", rgb);
 
                 }
 
@@ -476,18 +476,25 @@ var gradx = {
         gradx.cp = gradx.gx('#gradx_slider_content');
 
         //call the colorpicker plugin
-        gradx.cp.ColorPicker({
-            onChange: function(hsb, hex, rgb) {
+        gradx.cp.spectrum({
+            move: function(color) {
                 if (gradx.current_slider_id != false) {
-                    gradx.gx(gradx.current_slider_id).css('background-color', hex);
+                    var rgba = color.toRgbString();
+                    gradx.gx(gradx.current_slider_id).css('background-color', rgba);
                     gradx.update_style_array();
                     gradx.apply_style(gradx.panel, gradx.get_style_value());
                 }
             },
-            onSubmit: function() {
+            change: function() {
                 gradx.gx("#gradx_slider_info").hide();
             },
-            flat: true
+            flat: true,
+            showAlpha: true,
+            color: "blue",
+            clickoutFiresChange: true,
+            showInput: true,
+            showButtons: false
+
         });
 
         gradx.gx('#gradx_delete_slider').click(function() {

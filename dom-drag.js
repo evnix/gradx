@@ -84,12 +84,12 @@ var Drag = {
         var left = gradx.gx("#"+o.id).css("left");
 
 
-        if(parseInt(left) > 120 && parseInt(left) < 272) {
+        if(parseInt(left) > 60 && parseInt(left) < 390) {
             gradx.gx("#gradx_slider_info") //info element cached before
             .css("left",left)
             .show();
                      
-        }else {
+        }/*else {
             if(parseInt(left) > 120) {
                 left = "272px";
             }else{
@@ -100,11 +100,11 @@ var Drag = {
             .css("left",left)
             .show();
                  
-        }
+        }*/
          var color = gradx.gx("#"+o.id).css("backgroundColor");
         //but what happens if @color is not in RGB ? :(
         var rgb = gradx.get_rgb_obj(color);
-        gradx.cp.ColorPickerSetColor(rgb);
+        gradx.cp.spectrum("set",rgb);
 
 
         var ey	= e.clientY;
