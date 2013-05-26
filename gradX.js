@@ -393,6 +393,7 @@ var gradx = {
         this.current_slider_id = false;
         var html = "<div class='gradx'>\n\
                         <div id='gradx_add_slider' class='gradx_add_slider gradx_btn'><i class='icon icon-add'></i>add</div>\n\
+                        <div class='gradx_slectboxes'>\n\
                         <select id='gradx_gradient_type' class='gradx_gradient_type'>\n\
                             <option value='linear'>Linear</option>\n\
                             <option value='circle'>Radial - Circle</option>\n\
@@ -409,6 +410,7 @@ var gradx = {
                         </select>\n\
                         <select id='gradx_radial_gradient_size' class='gradx_gradient_type gradx_hide'>\n\
                         </select>\n\
+                        </div>\n\
                         <div class='gradx_container' id='gradx_" + id + "'>\n\
                             <div id='gradx_stop_sliders_" + id + "'></div>\n\
                             <div class='gradx_panel' id='gradx_panel_" + id + "'></div>\n\
