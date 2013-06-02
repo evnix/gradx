@@ -182,14 +182,20 @@ var gradx = {
 
         var len = gradx.slider_ids.length;
 
-        if (len == 1) {
+        if (len === 1) {
             //since only one slider , so simple background
 
             style_str = this.sliders[0][0];
         } else {
             var style_str = "", suffix = "";
             for (var i = 0; i < len; i++) {
-                style_str += suffix + (this.sliders[i][0] + " " + this.sliders[i][1] + "%");
+                if (this.sliders[i][1] == "") {
+                    style_str += suffix + (this.sliders[i][0]);
+
+                } else {
+                    style_str += suffix + (this.sliders[i][0] + " " + this.sliders[i][1] + "%");
+
+                }
                 suffix = " , "; //add , from next iteration
             }
 
@@ -239,17 +245,17 @@ var gradx = {
                         .show();
 
             } /*else {
-                if (parseInt(left) > 120) {
-                    left = "272px";
-                } else {
-                    left = "120px";
-                }
-
-                gradx.gx("#gradx_slider_info") //info element cached before
-                        .css("left", left)
-                        .show();
-
-            }*/
+             if (parseInt(left) > 120) {
+             left = "272px";
+             } else {
+             left = "120px";
+             }
+             
+             gradx.gx("#gradx_slider_info") //info element cached before
+             .css("left", left)
+             .show();
+             
+             }*/
             gradx.cp.spectrum("set", rgb);
 
         }
@@ -281,8 +287,10 @@ var gradx = {
 
         for (k in obj) {
 
+            if(typeof obj[k].position === "undefined") break;
+            
             //convert % to px based on containers width
-            delta = 26; //range: 26px tp 426px
+            var delta = 26; //range: 26px tp 426px
             position = parseInt((obj[k].position * this.container_width) / 100) + delta + "px";
 
             id = "gradx_slider_" + (this.slider_index); //create an id for this slider
@@ -324,17 +332,17 @@ var gradx = {
                                 .show();
 
                     } /*else {
-                        if (parseInt(left) > 120) {
-                            left = "272px";
-                        } else {
-                            left = "120px";
-                        }
-
-                        gradx.gx("#gradx_slider_info") //info element cached before
-                                .css("left", left)
-                                .show();
-
-                    }*/
+                     if (parseInt(left) > 120) {
+                     left = "272px";
+                     } else {
+                     left = "120px";
+                     }
+                     
+                     gradx.gx("#gradx_slider_info") //info element cached before
+                     .css("left", left)
+                     .show();
+                     
+                     }*/
                     var color = gradx.gx(gradx.current_slider_id).css("backgroundColor");
                     //but what happens if @color is not in RGB ? :(
                     var rgb = gradx.get_rgb_obj(color);
@@ -395,7 +403,6 @@ var gradx = {
         gradx.gx('#gradx_gradient_subtype2').hide();
 
     },
-            
     load_gradx: function(id, sliders) {
         this.me = gradx.gx(id);
         this.id = id.replace("#", "");
@@ -550,8 +557,8 @@ var gradx = {
                 //gradx.gx('#gradx_radial_gradient_size').show();
 
                 gradx.generate_radial_options();
-            }else{
-                
+            } else {
+
                 gradx.generate_linear_options();
                 gradx.gx('#gradx_gradient_subtype').val("left");
             }
@@ -720,6 +727,7 @@ var gradX = function(id, _options) {
 
 
 };
+
 
 
 
