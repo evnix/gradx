@@ -318,7 +318,7 @@ var gradx = {
                     var left = gradx.gx(gradx.current_slider_id).css("left");
 
 
-                    if (parseInt(left) > 120 && parseInt(left) < 272) {
+                    if (parseInt(left) > 26 && parseInt(left) < 426) {
                         gradx.gx("#gradx_slider_info") //info element cached before
                                 .css("left", left)
                                 .show();
