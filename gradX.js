@@ -386,6 +386,16 @@ var gradx = {
         gradx.gx('#gradx_gradient_subtype2').html(gradx.generate_options(options)).show();
 
     },
+    generate_linear_options: function() {
+
+        var options;
+        options = ["horizontal-center disabled", "left selected", "right", "top", "bottom"];
+        gradx.gx('#gradx_gradient_subtype').html(gradx.generate_options(options));
+
+        gradx.gx('#gradx_gradient_subtype2').hide();
+
+    },
+            
     load_gradx: function(id, sliders) {
         this.me = gradx.gx(id);
         this.id = id.replace("#", "");
@@ -540,6 +550,10 @@ var gradx = {
                 //gradx.gx('#gradx_radial_gradient_size').show();
 
                 gradx.generate_radial_options();
+            }else{
+                
+                gradx.generate_linear_options();
+                gradx.gx('#gradx_gradient_subtype').val("left");
             }
 
             gradx.type = type;
