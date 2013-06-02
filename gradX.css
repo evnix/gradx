@@ -73,7 +73,6 @@
 
 .gradx_slectboxes select {
     color: black;
-    vertical-align: top;
 }
 
 
@@ -345,3 +344,4 @@
     -moz-box-shadow: none;
     box-shadow: none;
 }
+ 
