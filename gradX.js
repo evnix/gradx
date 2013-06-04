@@ -56,7 +56,8 @@ var gradX = function(id, _options) {
         }
     };
 
-    var gradx = {
+    //make this global	
+    gradx = {
         rand_RGB: [],
         rand_pos: [],
         id: null,
