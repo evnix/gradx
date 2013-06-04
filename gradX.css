@@ -24,10 +24,6 @@
     font-size: 12px;
 } 
 
-#gradx_show_code{
-    display: none;
-}
-
 .gradx_container {
     padding: 10px;
     background: white;
@@ -81,7 +77,7 @@
 
 .gradx_slectboxes select {
     color: black;
-    vertical-align: top;
+    vertical-align: baseline;
 }
 
 

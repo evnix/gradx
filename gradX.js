@@ -55,8 +55,8 @@ var gradX = function(id, _options) {
             //nothing to do here by default
         }
     };
-
-    //make this global	
+	
+    //make global	
     gradx = {
         rand_RGB: [],
         rand_pos: [],
@@ -266,20 +266,10 @@ var gradX = function(id, _options) {
                             .css("left", left)
                             .show();
 
-                } /*else {
-                 if (parseInt(left) > 120) {
-                 left = "272px";
-                 } else {
-                 left = "120px";
-                 }
-                 
-                 gradx.gx("#gradx_slider_info") //info element cached before
-                 .css("left", left)
-                 .show();
-                 
-                 }*/
-                gradx.cp.spectrum("set", rgb);
-
+                } 
+                
+                this.set_colorpicker(rgb);
+                console.log(rgb);
             }
 
         },
@@ -380,6 +370,28 @@ var gradX = function(id, _options) {
             }
 
 
+        },
+        set_colorpicker: function(clr) {
+            gradx.cp.spectrum({
+                move: function(color) {
+                    if (gradx.current_slider_id != false) {
+                        var rgba = color.toRgbString();
+                        gradx.gx(gradx.current_slider_id).css('background-color', rgba);
+                        gradx.update_style_array();
+                        gradx.apply_style(gradx.panel, gradx.get_style_value());
+                    }
+                },
+                change: function() {
+                    gradx.gx("#gradx_slider_info").hide();
+                },
+                flat: true,
+                showAlpha: true,
+                color: clr,
+                clickoutFiresChange: true,
+                showInput: true,
+                showButtons: false
+
+            });
         },
         generate_options: function(options) {
 
@@ -536,26 +548,7 @@ var gradX = function(id, _options) {
             gradx.cp = gradx.gx('#gradx_slider_content');
 
             //call the colorpicker plugin
-            gradx.cp.spectrum({
-                move: function(color) {
-                    if (gradx.current_slider_id != false) {
-                        var rgba = color.toRgbString();
-                        gradx.gx(gradx.current_slider_id).css('background-color', rgba);
-                        gradx.update_style_array();
-                        gradx.apply_style(gradx.panel, gradx.get_style_value());
-                    }
-                },
-                change: function() {
-                    gradx.gx("#gradx_slider_info").hide();
-                },
-                flat: true,
-                showAlpha: true,
-                color: "blue",
-                clickoutFiresChange: true,
-                showInput: true,
-                showButtons: false
-
-            });
+            gradx.set_colorpicker("blue");
 
             gradx.gx('#gradx_delete_slider').click(function() {
                 gradx.gx(gradx.current_slider_id).remove();
@@ -754,9 +747,3 @@ var gradX = function(id, _options) {
 
 
 };
-
-
-
-
-
-
