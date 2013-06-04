@@ -24,6 +24,10 @@
     font-size: 12px;
 } 
 
+#gradx_show_code{
+    display: none;
+}
+
 .gradx_container {
     padding: 10px;
     background: white;
@@ -147,7 +151,7 @@
 
 
 .gradx_slectboxes {
-    display: inline-block;
+    display: inline;
 }
 
 .gradx_gradient_type {
@@ -349,4 +353,3 @@
     -moz-box-shadow: none;
     box-shadow: none;
 }
-
